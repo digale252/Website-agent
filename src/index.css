@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-blue: #008ecc;
+  --color-brand-dark: #1e293b;
+  --color-brand-light: #f8fafc;
+  --color-brand-blue-light: #e0f2fe;
+  
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+/* Custom scrollbar and premium utility styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Hide scrollbar for brand slider and category deck on mobile */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth scrolling with header offset */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 130px;
+}
