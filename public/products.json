@@ -1,0 +1,14 @@
+[
+    {
+        "name": "HP Victus",
+        "price": "$900",
+        "category": "Laptop",
+        "description": "Gaming laptop"
+    },
+    {
+        "name": "Nike Air Max",
+        "price": "$120",
+        "category": "Shoes",
+        "description": "Running shoes"
+    }
+]
