@@ -102,18 +102,10 @@ export default function Chatbot() {
     } catch (error) {
       console.warn("n8n Webhook call failed:", error);
 
-      // Construct a very helpful debug message so the user knows exactly why fetch failed
-      const botResponse = `⚠️ Xiriirka n8n Webhook waa uu guuldareystay.
-Ciladda: ${error.message}
-
-Fadlan hubi labadan qodob ee soo socda:
-1️⃣ Workflow-gaaga n8n ma yahay 'Active' ama ma riixday 'Listen for test event' ee n8n?
-2️⃣ Miyaad u oggolaatay CORS? (Giriiri Webhook Node -> Options -> Allowed Origins (CORS) -> ka dhig * ama http://localhost:5173).`;
-
       const botMsg = {
         id: Date.now() + 1,
         sender: 'bot',
-        text: botResponse,
+        text: '⚠️ Cilad ayaa ka jirta isku-xirka caawiyaha AI. Fadlan isku day mar kale.',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, botMsg]);
