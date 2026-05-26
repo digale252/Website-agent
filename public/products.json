@@ -1,14 +1,146 @@
 [
-    {
-        "name": "HP Victus",
-        "price": "$900",
-        "category": "Laptop",
-        "description": "Gaming laptop"
-    },
-    {
-        "name": "Nike Air Max",
-        "price": "$120",
-        "category": "Shoes",
-        "description": "Running shoes"
-    }
+  {
+    "name": "HP Victus",
+    "price": "$900.00",
+    "category": "Laptop",
+    "description": "Gaming laptop awood badan oo leh naqshad casri ah."
+  },
+  {
+    "name": "Samsung A55",
+    "price": "$220.00",
+    "category": "Smartphones",
+    "description": "Mobile phone leh kamarad tayo sare leh iyo batari weyn."
+  },
+  {
+    "name": "Vivo X60 Pro 5G",
+    "price": "$8.50",
+    "category": "Smartphones",
+    "description": "Flagship smartphone leh 12GB RAM iyo 256GB storage."
+  },
+  {
+    "name": "Apple AirPods Pro 2",
+    "price": "$10.00",
+    "category": "Audio Accessories",
+    "description": "Bluetooth wireless earbuds leh active noise cancellation (ANC)."
+  },
+  {
+    "name": "SonicGear Airphone HD",
+    "price": "$8.00",
+    "category": "Audio Accessories",
+    "description": "Studio bass bluetooth headset oo dhegaha ku habboon."
+  },
+  {
+    "name": "Mobile Wireless Earbuds",
+    "price": "$4.50",
+    "category": "Audio Accessories",
+    "description": "TWS earphones leh smart touch controls."
+  },
+  {
+    "name": "Smartwatch Active 2 Pro",
+    "price": "$20.00",
+    "category": "Wearables & Watches",
+    "description": "AMOLED smart watch leh heart rate monitor iyo SpO2."
+  },
+  {
+    "name": "Sport Smartwatch W1",
+    "price": "$12.00",
+    "category": "Wearables & Watches",
+    "description": "Fitness & activity tracker smartwatch oo leh blue band."
+  },
+  {
+    "name": "Active Smartwatch W2",
+    "price": "$13.00",
+    "category": "Wearables & Watches",
+    "description": "Smart watch leh black sport band iyo tracker."
+  },
+  {
+    "name": "Metallic Smartwatch WT",
+    "price": "$15.00",
+    "category": "Wearables & Watches",
+    "description": "Smart watch leh steel bezel iyo bluetooth calling."
+  },
+  {
+    "name": "Digital Tasbiha Counter",
+    "price": "$10.00",
+    "category": "Tasbiha Counters",
+    "description": "Digital tasbiha finger counter oo leh LED screen iyo soft strap."
+  },
+  {
+    "name": "Azan Tasbiha Smart Ring",
+    "price": "$4.00",
+    "category": "Tasbiha Counters",
+    "description": "Smart ring leh adan prayer alarms iyo count vibration."
+  },
+  {
+    "name": "Budget Tasbiha Counter",
+    "price": "$1.00",
+    "category": "Tasbiha Counters",
+    "description": "Simple tally clicker finger counter oo la isku hagaajin karo."
+  },
+  {
+    "name": "Casual Laptop Backpack",
+    "price": "$20.00",
+    "category": "Bags & Sleeves",
+    "description": "Water resistant backpack ku habboon 15.6 inch laptop."
+  },
+  {
+    "name": "Laptop Sleeve Protective Bag",
+    "price": "$14.00",
+    "category": "Bags & Sleeves",
+    "description": "Shockproof padded laptop sleeve oo leh fleece lining."
+  },
+  {
+    "name": "Urban Travel Backpack 1",
+    "price": "$13.00",
+    "category": "Bags & Sleeves",
+    "description": "Anti-theft backpack oo leh USB charging port."
+  },
+  {
+    "name": "Premium Office Backpack 2",
+    "price": "$8.00",
+    "category": "Bags & Sleeves",
+    "description": "Leather highlights backpack leh expandable capacity."
+  },
+  {
+    "name": "Slim Leather Laptop Bag",
+    "price": "$22.00",
+    "category": "Bags & Sleeves",
+    "description": "Slim real leather laptop bag ku habboon xafiiska."
+  },
+  {
+    "name": "Aluminum Laptop Stand",
+    "price": "$8.00",
+    "category": "Ergonomic Stands",
+    "description": "Adjustable aluminum laptop stand oo u fiican qaboojinta."
+  },
+  {
+    "name": "Folding Desk Laptop Stand",
+    "price": "$16.00",
+    "category": "Ergonomic Stands",
+    "description": "Folding desk laptop stand oo leh non-slip pads."
+  },
+  {
+    "name": "Red Dragon Gaming Mouse",
+    "price": "$1.50",
+    "category": "Keyboards & Mice",
+    "description": "6400 DPI RGB gaming mouse oo leh macro keys."
+  },
+  {
+    "name": "Wired Precision Office Mouse",
+    "price": "$6.00",
+    "category": "Keyboards & Mice",
+    "description": "Wired optical precision mouse ku habboon shaqada xafiiska."
+  },
+  {
+    "name": "Wireless Gaming Mouse",
+    "price": "$2.50",
+    "category": "Keyboards & Mice",
+    "description": "Ultra lightweight wireless rechargeable mouse."
+  },
+  {
+    "name": "Gaming Keyboard",
+    "price": "$10.00",
+    "category": "Keyboards & Mice",
+    "description": "Mechanical gaming keyboard leh backlights."
+  }
 ]

@@ -4,6 +4,7 @@ import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [products, setProducts] = useState([]);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -61,7 +62,8 @@ export default function Chatbot() {
           input: text,
           text: text,
           sender: "user",
-          sessionId: "gooxstore-session-999"
+          sessionId: "gooxstore-session-999",
+          products: products
         })
       });
 
@@ -127,6 +129,17 @@ Fadlan hubi labadan qodob ee soo socda:
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    fetch('/products.json')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+        }
+      })
+      .catch(err => console.warn("Failed to load products.json:", err));
+  }, []);
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
