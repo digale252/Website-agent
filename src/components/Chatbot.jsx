@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -33,7 +34,7 @@ export default function Chatbot() {
     }
   ];
 
-  const handleSendMessage = (text) => {
+  const handleSendMessage = async (text) => {
     if (!text.trim()) return;
 
     // Add user message
@@ -45,26 +46,46 @@ export default function Chatbot() {
     };
     setMessages(prev => [...prev, userMsg]);
     setInputValue('');
+    setIsTyping(true);
 
-    // Trigger typing effect/reply
-    setTimeout(() => {
+    try {
+      // POST request to n8n webhook
+      const response = await fetch("https://weses.app.n8n.cloud/webhook-test/chatbot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          message: text,
+          sender: "user",
+          sessionId: "gooxstore-session-999"
+        })
+      });
+
       let botResponse = "";
-      const lowerText = text.toLowerCase();
 
-      if (lowerText.includes("hp") || lowerText.includes("victus") || lowerText.includes("laptop") || lowerText.includes("laabtoob")) {
-        botResponse = "Haa, waxaan haynaa HP Victus oo ah Gaming Laptop aad u awood badan. Qiimihiisu waa $900.00!";
-      } else if (lowerText.includes("nike") || lowerText.includes("air max") || lowerText.includes("kab") || lowerText.includes("shoes")) {
-        botResponse = "Haa, kabaha Nike Air Max oo ah running shoes tayo sare leh waa diyaar, qiimihiisuna waa $120.00!";
-      } else if (lowerText.includes("smartwatch") || lowerText.includes("watch") || lowerText.includes("saacad")) {
-        botResponse = "Haa, waxaan haynaa noocyo kala duwan oo saacadaha smartwatches ah sida Sport Smartwatch W1 ($12.00) iyo Metallic Smartwatch ($15.00).";
-      } else if (lowerText.includes("airpods") || lowerText.includes("audio") || lowerText.includes("headphone") || lowerText.includes("dhego")) {
-        botResponse = "Haa, waxaan haynaa Apple AirPods Pro 2 ($10.00) iyo SonicGear Airphone ($8.00) oo maqal aad u saafi ah leh.";
-      } else if (lowerText.includes("dhalma") || lowerText.includes("delivery") || lowerText.includes("keenid")) {
-        botResponse = "Adegga dhalmadu (delivery) waa mid degdeg ah. Muqdisho waa 24-48 saac gudahood.";
-      } else if (lowerText.includes("lacag") || lowerText.includes("payment") || lowerText.includes("evc")) {
-        botResponse = "Waxaad lacagta ku bixin kartaa EVC Plus, Premier Wallet, ama Cash on Delivery (marka laguu keeno).";
+      if (response.ok) {
+        // Handle n8n response parser formats (supports JSON objects, string outputs, arrays)
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          if (typeof data === 'string') {
+            botResponse = data;
+          } else if (Array.isArray(data) && data.length > 0) {
+            const first = data[0];
+            botResponse = first.output || first.response || first.reply || first.text || first.message || JSON.stringify(first);
+          } else if (data && typeof data === 'object') {
+            botResponse = data.output || data.response || data.reply || data.text || data.message || JSON.stringify(data);
+          }
+        } else {
+          botResponse = await response.text();
+        }
       } else {
-        botResponse = "Waad ku mahadsantahay farriintaada! Su'aashaada waa nala soo gaartay. Waxaad sidoo kale si toos ah nagala soo xiriiri kartaa Whatsapp lambarkayaga +252 614 940391 si degdeg ah lagugu caawiyo.";
+        throw new Error("n8n Webhook returned non-200 response status");
+      }
+
+      if (!botResponse || typeof botResponse !== 'string' || botResponse.trim() === '') {
+        throw new Error("Empty response received from n8n webhook");
       }
 
       const botMsg = {
@@ -74,34 +95,49 @@ export default function Chatbot() {
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, botMsg]);
-    }, 800);
-  };
+    } catch (error) {
+      console.warn("n8n Webhook failed, executing local query fallback:", error);
+      
+      // Fallback matching so the widget remains operational offline/locally
+      let botResponse = "";
+      const lowerText = text.toLowerCase();
 
-  const handleFaqClick = (faq) => {
-    // Add user question message
-    const userMsg = {
-      id: Date.now(),
-      sender: 'user',
-      text: faq.q,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-    setMessages(prev => [...prev, userMsg]);
+      if (lowerText.includes("hp") || lowerText.includes("victus") || lowerText.includes("laptop") || lowerText.includes("laabtoob")) {
+        botResponse = "Haa, waxaan haynaa HP Victus oo ah Gaming Laptop aad u awood badan. Qiimihiisu waa $900.00!";
+      } else if (lowerText.includes("nike") || lowerText.includes("air max") || lowerText.includes("kab") || lowerText.includes("shoes")) {
+        botResponse = "Haa, kabaha Nike Air Max oo ah running shoes tayo sare leh waa diyaar, qiimihiisuna waa $120.00!";
+      } else if (lowerText.includes("smartwatch") || lowerText.includes("saacad") || lowerText.includes("watch")) {
+        botResponse = "Haa, waxaan haynaa noocyo kala duwan oo saacadaha smartwatches ah sida Sport Smartwatch W1 ($12.00) iyo Metallic Smartwatch ($15.00).";
+      } else if (lowerText.includes("airpods") || lowerText.includes("audio") || lowerText.includes("headphone")) {
+        botResponse = "Haa, waxaan haynaa Apple AirPods Pro 2 ($10.00) iyo SonicGear Airphone ($8.00) oo maqal aad u saafi ah leh.";
+      } else if (lowerText.includes("dhalma") || lowerText.includes("delivery") || lowerText.includes("keen")) {
+        botResponse = "Dhalmadu waxay qaadataa 24 ilaa 48 saacadood gudahood magaalada Muqdisho iyo nawaaxigeeda. Gobolada kale waxay ku qaadataa 3-5 maalmood.";
+      } else if (lowerText.includes("lacag") || lowerText.includes("payment") || lowerText.includes("evc")) {
+        botResponse = "Waxaad lacagta ku bixin kartaa EVC Plus, Premier Wallet, ama Cash on Delivery (marka laguu keeno).";
+      } else {
+        botResponse = "Waad ku mahadsantahay farriintaada! Su'aashaada waa nala soo gaartay. Waxaad sidoo kale si toos ah nagala soo xiriiri kartaa Whatsapp lambarkayaga +252 614 940391 si laguu caawiyo.";
+      }
 
-    // Bot automatic reply
-    setTimeout(() => {
       const botMsg = {
         id: Date.now() + 1,
         sender: 'bot',
-        text: faq.reply,
+        text: botResponse,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, botMsg]);
-    }, 450);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleFaqClick = (faq) => {
+    // FAQ clicks are posted to the chatbot logic, triggering the n8n webhook dynamically!
+    handleSendMessage(faq.q);
   };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isTyping]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
@@ -113,7 +149,7 @@ export default function Chatbot() {
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center relative">
                 <Bot size={22} className="text-white" />
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-brand-blue rounded-full"></span>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-brand-blue rounded-full animate-pulse"></span>
               </div>
               <div className="text-left">
                 <h3 className="font-extrabold text-sm tracking-tight">Goox Assistant</h3>
@@ -152,6 +188,23 @@ export default function Chatbot() {
                 </div>
               );
             })}
+
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="flex gap-2.5 justify-start text-left">
+                <div className="w-7 h-7 rounded-full bg-sky-100 text-brand-blue flex items-center justify-center flex-shrink-0 text-xs font-bold shadow-sm animate-pulse">
+                  G
+                </div>
+                <div className="max-w-[75%]">
+                  <div className="p-3 bg-white text-slate-700 rounded-2xl rounded-tl-none text-xs font-medium shadow-sm flex items-center gap-1.5 py-4">
+                    <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </div>
 
@@ -163,7 +216,7 @@ export default function Chatbot() {
                 onClick={() => handleFaqClick(faq)}
                 className="text-[10px] font-bold text-slate-600 hover:text-brand-blue bg-slate-50 hover:bg-sky-50 border border-slate-100 hover:border-sky-100 px-2.5 py-1 rounded-full transition-all cursor-pointer select-none"
               >
-                {faq.q}
+                {faq.q.split(" (")[0]} {/* Display visual tag */}
               </button>
             ))}
           </div>
