@@ -57,6 +57,9 @@ export default function Chatbot() {
         },
         body: JSON.stringify({
           message: text,
+          chatInput: text,
+          input: text,
+          text: text,
           sender: "user",
           sessionId: "gooxstore-session-999"
         })
@@ -65,7 +68,6 @@ export default function Chatbot() {
       let botResponse = "";
 
       if (response.ok) {
-        // Handle n8n response parser formats (supports JSON objects, string outputs, arrays)
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const data = await response.json();
@@ -81,11 +83,11 @@ export default function Chatbot() {
           botResponse = await response.text();
         }
       } else {
-        throw new Error("n8n Webhook returned non-200 response status");
+        throw new Error(`Server wuxuu soo celiyay qalad (Status: ${response.status})`);
       }
 
       if (!botResponse || typeof botResponse !== 'string' || botResponse.trim() === '') {
-        throw new Error("Empty response received from n8n webhook");
+        throw new Error("Jawaab eber ah (empty response) ayaa laga helay n8n");
       }
 
       const botMsg = {
@@ -96,27 +98,15 @@ export default function Chatbot() {
       };
       setMessages(prev => [...prev, botMsg]);
     } catch (error) {
-      console.warn("n8n Webhook failed, executing local query fallback:", error);
-      
-      // Fallback matching so the widget remains operational offline/locally
-      let botResponse = "";
-      const lowerText = text.toLowerCase();
+      console.warn("n8n Webhook call failed:", error);
 
-      if (lowerText.includes("hp") || lowerText.includes("victus") || lowerText.includes("laptop") || lowerText.includes("laabtoob")) {
-        botResponse = "Haa, waxaan haynaa HP Victus oo ah Gaming Laptop aad u awood badan. Qiimihiisu waa $900.00!";
-      } else if (lowerText.includes("nike") || lowerText.includes("air max") || lowerText.includes("kab") || lowerText.includes("shoes")) {
-        botResponse = "Haa, kabaha Nike Air Max oo ah running shoes tayo sare leh waa diyaar, qiimihiisuna waa $120.00!";
-      } else if (lowerText.includes("smartwatch") || lowerText.includes("saacad") || lowerText.includes("watch")) {
-        botResponse = "Haa, waxaan haynaa noocyo kala duwan oo saacadaha smartwatches ah sida Sport Smartwatch W1 ($12.00) iyo Metallic Smartwatch ($15.00).";
-      } else if (lowerText.includes("airpods") || lowerText.includes("audio") || lowerText.includes("headphone")) {
-        botResponse = "Haa, waxaan haynaa Apple AirPods Pro 2 ($10.00) iyo SonicGear Airphone ($8.00) oo maqal aad u saafi ah leh.";
-      } else if (lowerText.includes("dhalma") || lowerText.includes("delivery") || lowerText.includes("keen")) {
-        botResponse = "Dhalmadu waxay qaadataa 24 ilaa 48 saacadood gudahood magaalada Muqdisho iyo nawaaxigeeda. Gobolada kale waxay ku qaadataa 3-5 maalmood.";
-      } else if (lowerText.includes("lacag") || lowerText.includes("payment") || lowerText.includes("evc")) {
-        botResponse = "Waxaad lacagta ku bixin kartaa EVC Plus, Premier Wallet, ama Cash on Delivery (marka laguu keeno).";
-      } else {
-        botResponse = "Waad ku mahadsantahay farriintaada! Su'aashaada waa nala soo gaartay. Waxaad sidoo kale si toos ah nagala soo xiriiri kartaa Whatsapp lambarkayaga +252 614 940391 si laguu caawiyo.";
-      }
+      // Construct a very helpful debug message so the user knows exactly why fetch failed
+      const botResponse = `⚠️ Xiriirka n8n Webhook waa uu guuldareystay.
+Ciladda: ${error.message}
+
+Fadlan hubi labadan qodob ee soo socda:
+1️⃣ Workflow-gaaga n8n ma yahay 'Active' ama ma riixday 'Listen for test event' ee n8n?
+2️⃣ Miyaad u oggolaatay CORS? (Giriiri Webhook Node -> Options -> Allowed Origins (CORS) -> ka dhig * ama http://localhost:5173).`;
 
       const botMsg = {
         id: Date.now() + 1,
@@ -131,7 +121,6 @@ export default function Chatbot() {
   };
 
   const handleFaqClick = (faq) => {
-    // FAQ clicks are posted to the chatbot logic, triggering the n8n webhook dynamically!
     handleSendMessage(faq.q);
   };
 
@@ -176,7 +165,7 @@ export default function Chatbot() {
                     </div>
                   )}
                   <div className="max-w-[75%]">
-                    <div className={`p-3 rounded-2xl text-xs font-medium shadow-sm leading-relaxed ${
+                    <div className={`p-3 rounded-2xl text-xs font-medium shadow-sm leading-relaxed whitespace-pre-line ${
                       isBot ? 'bg-white text-slate-700 rounded-tl-none' : 'bg-brand-blue text-white rounded-tr-none'
                     }`}>
                       {msg.text}
@@ -216,7 +205,7 @@ export default function Chatbot() {
                 onClick={() => handleFaqClick(faq)}
                 className="text-[10px] font-bold text-slate-600 hover:text-brand-blue bg-slate-50 hover:bg-sky-50 border border-slate-100 hover:border-sky-100 px-2.5 py-1 rounded-full transition-all cursor-pointer select-none"
               >
-                {faq.q.split(" (")[0]} {/* Display visual tag */}
+                {faq.q.split(" (")[0]}
               </button>
             ))}
           </div>
