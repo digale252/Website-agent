@@ -7,6 +7,7 @@ import Brands from './components/Brands';
 import DailyEssentials from './components/DailyEssentials';
 import NewArrivals from './components/NewArrivals';
 import Footer from './components/Footer';
+import Chatbot from './components/Chatbot';
 import { X, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
 
 export default function App() {
@@ -240,6 +241,9 @@ export default function App() {
           )}
         </div>
       </div>
+      
+      {/* Floating Interactive Chatbot Widget */}
+      <Chatbot />
     </div>
   );
 }
